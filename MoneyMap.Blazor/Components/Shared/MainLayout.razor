@@ -1,0 +1,53 @@
+﻿@inherits LayoutComponentBase
+@using MudBlazor
+@using MoneyMap.Blazor.Components.Pages
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
+            @Body
+            <MudSnackbarProvider />
+            <MudDialogProvider />
+            <MudThemeProvider Theme="@_theme" />
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+@code {
+    private bool _drawerOpen = true;
+    private readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#110E42",
+            PrimaryContrastText = "#fff",
+            Secondary = "#68B984",
+            SecondaryContrastText = "#fff",
+            Background = "#f5f5f5",
+            Surface = "#fff",
+            AppbarBackground = "#110E42",
+            DrawerBackground = "#f0f0f0",
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#110E42",
+            PrimaryContrastText = "#fff",
+            Secondary = "#68B984",
+            SecondaryContrastText = "#fff",
+            Background = "#212121",
+            Surface = "#303030",
+            AppbarBackground = "#110E42",
+            DrawerBackground = "#303030",
+        }
+    };
+    void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

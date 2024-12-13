@@ -1,0 +1,145 @@
+@page "/register"
+@using Microsoft.AspNetCore.Identity
+@using MoneyMap.Blazor.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<div class="login-container">
+    <div class="login-card">
+        <h3 class="login-header">Register</h3>
+        <EditForm Model="@registerModel" OnValidSubmit="HandleRegister" FormName="registerForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+             <div>
+                <label>First Name:</label>
+                <InputText @bind-Value="registerModel.FirstName" class="form-control" />
+            </div>
+            <br/>
+             <div>
+                <label>Last Name:</label>
+                <InputText @bind-Value="registerModel.LastName" class="form-control" />
+            </div>
+            <br/>
+            <div>
+                <label>Email:</label>
+                <InputText @bind-Value="registerModel.Email" class="form-control" />
+            </div>
+            <br />
+            <div>
+                <label>Password:</label>
+                <InputText @bind-Value="registerModel.Password" type="password" class="form-control" />
+            </div>
+            <br /><br />
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </EditForm>
+         <br/>
+        <div class="text-center">
+            <a href="/login">Giriş Yap</a>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('./loginPage/wallpaper.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1); /* Arka plan resmi üstünde hafif karartma */
+    /*  backdrop-filter: blur(1px);  Arka planın biraz bulanık görünmesi için */
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.login-header {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+</style>
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private async Task HandleRegister()
+    {
+        var user = new ApplicationUser { UserName = registerModel.Email, Email = registerModel.Email, FirstName = registerModel.FirstName, LastName = registerModel.LastName };
+        var result = await UserManager.CreateAsync(user, registerModel.Password);
+        if (result.Succeeded)
+        {
+            Snackbar.Add("Kayıt başarılı!", Severity.Success);
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            foreach (var error in result.Errors)
+            {
+                Snackbar.Add(error.Description, Severity.Error);
+            }
+        }
+    }
+
+    public class RegisterModel
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
